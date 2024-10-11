@@ -152,7 +152,15 @@ export function Admin({ batas, setBatas }) {
           </div>
         </div>
       </div>
-      <div className="kanan w-1/2 h-screen px-5 py-10 flex flex-col gap-5 border border-slate-900"></div>
+      <div className="kanan w-1/2 h-screen px-5 py-10 flex flex-col gap-5 border border-slate-900">
+        <span>belum tau mau ditambahin fitur apa.</span>
+        <span>
+          {" "}
+          btw fungsi deadline dimatiin jadi gak ada pengaruh apa apa dan fungsi
+          <span className="font-bold"> list belum nilai</span> juga belom
+          ditambah
+        </span>
+      </div>
     </div>
   );
 }

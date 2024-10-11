@@ -42,21 +42,23 @@ export function Login({ setCurrentUser, deadline }) {
       if (peserta.file.uploadedAt != "") {
         //ke halaman penilaian
 
-        if (currentTime >= deadline) {
-          console.log("masuk ke nilai");
-          navigate("/penilaian");
-        } else {
-          console.log("masuk ke dummy nunggu waktu");
-          setDummyActive("sebelum deadline");
-        }
+        navigate("/penilaian"); // hapus nanti
+        // if (currentTime >= deadline) {
+        //   console.log("masuk ke nilai");
+        //   navigate("/penilaian");
+        // } else {
+        //   console.log("masuk ke dummy nunggu waktu");
+        //   setDummyActive("sebelum deadline");
+        // }
       } else {
-        if (currentTime < deadline) {
-          console.log("masuk ke pengumpulan");
-          navigate("/pengumpulan");
-        } else {
-          console.log("masuk ke dummy telat");
-          setDummyActive("setelah deadline");
-        }
+        navigate("/pengumpulan");
+        // if (currentTime < deadline) {
+        //   console.log("masuk ke pengumpulan");
+        //   navigate("/pengumpulan");
+        // } else {
+        //   console.log("masuk ke dummy telat");
+        //   setDummyActive("setelah deadline");
+        // }
       }
       // Proceed with the login or other actions, like redirecting or setting state
     } else {

@@ -143,7 +143,9 @@ function CardNilai({
   const handleDownload = (e) => {
     if (!downloadLink) {
       e.preventDefault(); // Prevent the default action if the link is empty
-      alert("Download link is not available.");
+      alert(
+        "tim tersebut belum submit dashboard. (hanya terjadi saat development, karena saat lomba dipastikan tim untuk mengumpulkan tepat waktu)"
+      );
       return;
     }
 
