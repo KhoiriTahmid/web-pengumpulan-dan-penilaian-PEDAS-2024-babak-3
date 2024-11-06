@@ -1,7 +1,30 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-export function Dummy({ context, deadline = "" }) {
+export function Dummy({ context, deadline = "", setPopup = "" }) {
+  console.log(context);
+  if (context.startsWith("error")) {
+    return (
+      <div className="bg-white min-h-screen">
+        <div className="bg-white p-6 min-h-screen md:mx-auto flex flex-col justify-center items-center gap-4 ">
+          <div className=" text-6xl mb-5">❌</div>
+          <div className="text-center flex flex-col items-center gap-2">
+            <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">
+              Error
+            </h3>
+            <p className="text-gray-600 text-sm my-2">{context.slice(5)}</p>
+
+            <a
+              href={"/"}
+              className=" cursor-pointer px-12 w-fit mt-5 border border-slate-900 hover:bg-gray-200   font-semibold py-3"
+            >
+              Kembali
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (context == "loading") {
     return (
       <div
@@ -29,37 +52,38 @@ export function Dummy({ context, deadline = "" }) {
     );
   }
   if (context.endsWith("deadline")) {
+    console.log(context);
     return (
       <div className="bg-white min-h-screen">
         <div className="bg-white p-6 min-h-screen md:mx-auto flex flex-col justify-center items-center gap-4 ">
-          <svg
-            viewBox="0 0 24 24"
-            className="text-green-600 w-16 h-16 mx-auto my-6"
-          >
-            <path
-              fill="currentColor"
-              d="M12,0A12,12,0,1,0,24,12,12.014,12.014,0,0,0,12,0Zm6.927,8.2-6.845,9.289a1.011,1.011,0,0,1-1.43.188L5.764,13.769a1,1,0,1,1,1.25-1.562l4.076,3.261,6.227-8.451A1,1,0,1,1,18.927,8.2Z"
-            ></path>
-          </svg>
-          <div className="text-center">
+          <div className=" text-6xl mb-5">
+            {context == "sebelum deadline"
+              ? "⌛"
+              : context == "selesai deadline"
+              ? "👍"
+              : "⌛"}
+          </div>
+          <div className="text-center flex flex-col items-center gap-2">
             <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">
               {context == "sebelum deadline"
                 ? "Sesi penilaian belum dimulai"
+                : context == "selesai deadline"
+                ? "Kamu telah mengumpulkan tugas dan penilaian"
                 : "Sesi pengumpulan telah berakhir"}
             </h3>
-            <p className="text-gray-600 my-2">
+            <p className="text-gray-600 text-sm my-2">
               {context == "sebelum deadline"
                 ? `Sesi penilaian dapat dilakukan mulai pukul ${deadline}`
-                : "telat"}
+                : context == "selesai deadline"
+                ? "Sudah selesai, kamu hanya tinggal menunggu pengumuman hasil penilaian"
+                : "Kamu telat mengumpulkan dashboard"}
             </p>
-            <p> Terimakasih </p>
-            <div className="py-10 text-center">
-              <a
-                href={"/"}
-                className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3"
-              >
-                Okay
-              </a>
+
+            <div
+              onClick={() => setPopup("")}
+              className=" cursor-pointer px-12 w-fit mt-5 border border-slate-900 hover:bg-gray-200   font-semibold py-3"
+            >
+              Okay
             </div>
           </div>
         </div>
@@ -67,33 +91,25 @@ export function Dummy({ context, deadline = "" }) {
     );
   }
   return (
-    <div className="bg-white min-h-screen">
-      <div className="bg-white p-6 min-h-screen md:mx-auto flex flex-col justify-center items-center gap-4 ">
-        <svg
-          viewBox="0 0 24 24"
-          className="text-green-600 w-16 h-16 mx-auto my-6"
-        >
-          <path
-            fill="currentColor"
-            d="M12,0A12,12,0,1,0,24,12,12.014,12.014,0,0,0,12,0Zm6.927,8.2-6.845,9.289a1.011,1.011,0,0,1-1.43.188L5.764,13.769a1,1,0,1,1,1.25-1.562l4.076,3.261,6.227-8.451A1,1,0,1,1,18.927,8.2Z"
-          ></path>
-        </svg>
+    <div className="bg-white min-h-screen flex justify-center items-center">
+      <div className="bg-white p-6  w-fit px-28 py-10 md:mx-auto flex flex-col justify-center items-center gap-4 ">
+        <div className=" text-6xl mb-5">👌</div>
         <div className="text-center">
-          <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center">
+          <h3 className="md:text-2xl text-base text-gray-900 font-semibold text-center mb-5">
             {context == "submit"
-              ? "Pengumpulan Berhasil"
-              : "Penilaian Disimpan"}
+              ? "Pengumpulan file berhasil"
+              : "Penilaian berhasil disimpan"}
           </h3>
           <p className="text-gray-600 my-2">
             {context == "submit"
-              ? "Silahkan Login kemabali dan lakukan penilaian pada pukul 20.00"
-              : "Silahkan menunggu hasil penilaian"}
+              ? `Silahkan Login kembali dan lakukan penilaian mulai pukul ${deadline}`
+              : "Silahkan tunggu pengumuman hasil"}
           </p>
-          <p> Terimakasih </p>
-          <div className="py-10 text-center">
+          <p className="text-gray-600 my-2"> Terimakasih 😉</p>
+          <div className="pt-10 text-center">
             <a
               href={"/"}
-              className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3"
+              className="px-12 border border-slate-900 hover:bg-gray-200   font-semibold py-3"
             >
               Okay
             </a>

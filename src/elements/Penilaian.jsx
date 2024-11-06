@@ -4,15 +4,15 @@ import { addPenilaian, getEvaluatedTeams } from "../utils/fungsi.jsx";
 import { useNavigate } from "react-router-dom";
 import { Dummy } from "./Dummy.jsx";
 
-export function Penilaian({ evaluatedTeams, teamId }) {
+export function Penilaian({ evaluatedTeams, teamId, id }) {
   // bigData
   const [dataInputNilai, setDataInputNilai] = useState(
     evaluatedTeams.map((e) => ({
       teamId: e,
       nilai: {
-        estetika: -1,
-        kejelasan: -1,
-        kreativitas: -1,
+        estetika: "",
+        kejelasan: "",
+        kreativitas: "",
       },
       sudah: false,
     }))
@@ -20,6 +20,7 @@ export function Penilaian({ evaluatedTeams, teamId }) {
 
   const navigate = useNavigate();
   const [links, setLinks] = useState([]);
+  const [popUpInfo, setPopUpInfo] = useState(true);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,11 +38,21 @@ export function Penilaian({ evaluatedTeams, teamId }) {
     fetchData();
   }, [evaluatedTeams]);
 
+  useEffect(() => {
+    console.log(dataInputNilai);
+  }, [dataInputNilai]);
+
   if (loading) {
     return <Dummy context={"loading"} />;
   }
 
-  function updateDataInputNilai(estetika, kejelasan, kreativitas, index) {
+  function updateDataInputNilai(
+    estetika,
+    kejelasan,
+    kreativitas,
+    sudah,
+    index
+  ) {
     console.log(estetika);
     setDataInputNilai((prev) => {
       const newValueInput = [...prev];
@@ -52,7 +63,7 @@ export function Penilaian({ evaluatedTeams, teamId }) {
           kejelasan,
           kreativitas,
         },
-        sudah: true,
+        sudah,
       };
       return newValueInput;
     });
@@ -64,9 +75,9 @@ export function Penilaian({ evaluatedTeams, teamId }) {
       // Check if teamId is undefined, or any nilai is 0, or sudah is false
       return (
         teamId === undefined ||
-        nilai.estetika === -1 ||
-        nilai.kejelasan === -1 ||
-        nilai.kreativitas === -1 ||
+        nilai.estetika == "" ||
+        nilai.kejelasan == "" ||
+        nilai.kreativitas == "" ||
         sudah === false
       );
     });
@@ -75,35 +86,80 @@ export function Penilaian({ evaluatedTeams, teamId }) {
       console.error("Found invalid items in dataInputNilai:", invalidItems);
       return false;
     }
-    console.log("All items in dataInputNilai are valid.");
-    const akhir = await addPenilaian(teamId, dataInputNilai);
+    console.log("All items in dataInputNilai are valid.", dataInputNilai);
+    const akhir = await addPenilaian(id, teamId, dataInputNilai);
     if (akhir) {
       navigate("/penilaian/sukses", { replace: true });
     }
   }
 
+  if (popUpInfo) {
+    return (
+      <div className="bg-white min-h-screen flex justify-center items-center">
+        <div className="bg-white p-6  w-fit px-28 py-10 md:mx-auto flex flex-col justify-center items-center gap-4 ">
+          <div className=" text-6xl mb-5">👋</div>
+          <div className="text-center flex flex-col items-center">
+            <h3 className="md:text-2xl mb-5 text-base text-gray-900 font-semibold text-center">
+              Selamat datang di halaman penilaian
+            </h3>
+            <p className="text-gray-600 mt-3 mb-2 font-medium">
+              Untuk menilai karya tim lain, kamu perlu:
+            </p>
+            <div className="flex flex-col items-start  gap-1 text-sm py-3 font-medium">
+              <div className="flex gap-3 text-gray-600">
+                <p className="w-3">1.</p>
+                <p>Mengunduh file dashboard tiap tim</p>
+              </div>
+              <div className="flex gap-3 text-gray-600">
+                <p className="w-3">2.</p>
+                <p>Membuka file tersebut di Tableau</p>
+              </div>
+              <div className="flex gap-3 text-gray-600">
+                <p className="w-3">3.</p>
+                <p>Mengisi form nilai tiap tim</p>
+              </div>
+            </div>
+            <div className="flex gap-2 items-center mt-2">
+              <InfoIcon />
+              <span className="text-red-600 text-xs font-medium">
+                Rentang nilai harus diantara 0.0 - 10.0
+              </span>
+            </div>
+            <div
+              onClick={() => setPopUpInfo(false)}
+              className="mt-8 px-12 border cursor-pointer border-slate-900 hover:bg-gray-200   font-semibold py-3"
+            >
+              Paham
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col justify-around min-h-screen items-center">
+    <div className="flex flex-col justify-center gap-10 min-h-screen items-center">
       <div className="flex items-center justify-center min-fit  gap-4 ">
-        {dataInputNilai.map((e, i) => (
-          <CardNilai
-            key={i}
-            downloadLink={links[i]}
-            dataInputNilai={e}
-            updateDataInputNilai={updateDataInputNilai}
-            index={i}
-          />
-        ))}
+        {dataInputNilai.map(
+          (e, i) =>
+            links[i] && (
+              <CardNilai
+                key={i}
+                downloadLink={links[i]}
+                dataInputNilai={e}
+                updateDataInputNilai={updateDataInputNilai}
+                index={i}
+              />
+            )
+        )}
       </div>
-      <div className="flex gap-2 items-center">
-        <InfoIcon />
-        <span className="text-red-600 text-sm">
-          Rentang nilai dari 0.0 -10.0
-        </span>
-      </div>
+
       <div
         onClick={handleSubmit}
-        className="py-2 px-7 bg-white border rounded-xl border-gray-300 hover:shadow-2xl shadow-lg cursor-pointer"
+        className={`py-2 w-[92%] text-center bg-white border border-slate-900 hover:shadow-xl shadow-md cursor-pointer ${
+          dataInputNilai.some((e) => e.sudah == false) &&
+          "pointer-events-none opacity-70 line-through shadow-sm"
+        }`}
       >
         Submit
       </div>
@@ -121,9 +177,11 @@ function CardNilai({
   const [valueInput, setValueInput] = useState([0, 0, 0]); // 0-10
 
   useEffect(() => {
-    if (!isError.includes(1) && !valueInput.includes(0)) {
-      updateDataInputNilai(...valueInput, (index = index));
-    }
+    updateDataInputNilai(
+      ...valueInput,
+      !isError.includes(1) && !valueInput.includes(0),
+      (index = index)
+    );
   }, [isError]);
 
   const handleInputChange = (value, i) => {
@@ -155,10 +213,10 @@ function CardNilai({
 
   return (
     <>
-      <div className="bg-white w-fit border border-gray-300 hover:shadow-2xl shadow-lg flex flex-col gap-4 ">
+      <div className="bg-white w-fit border border-gray-900 hover:shadow-xl flex flex-col gap-4 active:border-blue-500">
         <div className="flex flex-col mx-8 mt-10">
           <span className="text-lg font-semibold">*****</span>
-          <h2 className="text-2xl font-bold mb-5">Team {index + 1}</h2>
+          <h2 className="text-xl font-bold mb-2">Team {index + 1}</h2>
         </div>
 
         <div>
@@ -173,19 +231,19 @@ function CardNilai({
         {/* Input fields */}
         <div className="flex flex-col gap-3">
           {Object.keys(dataInputNilai.nilai).map((key, i) => (
-            <div key={i} className="flex flex-col max-h-max text-gray-500 mx-8">
-              <div className="flex items-end justify-between gap-8 text-sm font-medium">
-                <label className="block w-24">
+            <div key={i} className="flex flex-col max-h-max text-gray-600 mx-8">
+              <div className="flex items-end justify-between gap-8 text-sm ">
+                <label className="block w-24 ">
                   {key[0].toUpperCase() + key.slice(1)}
                 </label>
                 <input
                   type="text"
                   maxLength="4"
                   onChange={(e) => handleInputChange(e.target.value, i)}
-                  className={`w-5 border-b-2 ${
+                  className={`w-5 border-b-[1.5px] ${
                     isError[i]
                       ? "border-red-600"
-                      : "border-slate-500 focus:border-slate-800"
+                      : "border-slate-500 focus:border-blue-500"
                   } focus:outline-none`}
                 />
               </div>
@@ -193,10 +251,8 @@ function CardNilai({
           ))}
 
           {/* Status message */}
-          <div className="mt-6 w-[85%] mx-auto bg-gray-300 font-normal text-black text-xs py-8 px-4 text-center">
-            {!isError.includes(1) && !valueInput.includes(0)
-              ? "Sudah diisi"
-              : "Belum diisi"}
+          <div className="mt-6 w-[85%] mx-auto border border-b-0 border-slate-900 font-normal text-black text-2xl py-5 px-4 text-center">
+            {!isError.includes(1) && !valueInput.includes(0) ? "👍" : "👎"}
           </div>
         </div>
       </div>

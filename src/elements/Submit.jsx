@@ -35,9 +35,20 @@ export function Submit({ currentUser }) {
     // Check if there is a file to upload
     if (data && data.length > 0 && isTwbx) {
       const file = data[0]; // Get the first file from the FileList
+      // console.log(file);
+      const uniqueName = `${Date.now()}_${
+        currentUser.teamId[0] + currentUser.teamId[2] + currentUser.teamId[4]
+      }_${file.name[1] + file.name[2] + file.name[3]}`;
+
+      // const newFile = new File([file], uniqueName, { type: file.type });
+
+      let blob = file.slice(0, file.size, "application/twbx");
+      const newFile = new File([blob], `${uniqueName}.twbx`, {
+        type: "application/twbx",
+      });
 
       // Upload the file to Firebase Storage
-      const fileUrl = await uploadFile(file); // Call your upload function
+      const fileUrl = await uploadFile(newFile); // Call your upload function
       console.log("File uploaded at:", fileUrl); // You can store this URL as needed
 
       try {
@@ -90,17 +101,16 @@ export function Submit({ currentUser }) {
 
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="bg-white p-16 px-24 border w-2/5 border-gray-300 shadow-lg flex flex-col gap-8">
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className=" p-16 px-24 border w-2/5 border-gray-900  flex flex-col gap-8">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold mb-6">Attachment</h2>
-            <span className="text-lg font-semibold">*****</span>
+            <h2 className="text-xl font-semibold ">Pengumpulan Dashboard 🗃️</h2>
           </div>
 
           {/* Input fields */}
           <form onSubmit={submitHandle} className="flex flex-col">
             <div
-              className="flex flex-col max-h-max items-center py-10 w-full border-2 rounded-lg border-slate-900 focus:outline-none focus:border-blue-500"
+              className="flex flex-col max-h-max items-center py-10 w-full border  border-slate-900 focus:outline-none focus:border-blue-500"
               onDragOver={handleDragOver}
               onDrop={handleDrop}
             >
@@ -111,22 +121,27 @@ export function Submit({ currentUser }) {
                 ref={fileInputRef}
                 className="w-full border-none hidden"
               />
-              <p className="text-sm text-gray-500 ">
-                Drag & Drop files here or{" "}
+              <div className="text-3xl mb-5">📂</div>
+              <p className={`text-sm text-gray-500 px-7 text-center`}>
+                Drag & Drop file di sini atau{" "}
                 <span
-                  className="text-blue-700 cursor-pointer hover:text-blue-500"
+                  className="text-blue-700  cursor-pointer hover:text-blue-300 hover:"
                   onClick={() => fileInputRef.current.click()}
                 >
-                  click to upload
+                  klik untuk upload
                 </span>
               </p>
             </div>
 
-            <span className={`text-xs mt-1 h-3 ${!isTwbx && "text-red-600"}`}>
+            <span
+              className={`text-xs  mt-1 h-3 text-wrap font-medium  ${
+                !isTwbx ? "text-red-600 " : "text-slate-600"
+              }`}
+            >
               {data
                 ? isTwbx
-                  ? data[0].name
-                  : "file harus dalam format .twbx"
+                  ? `📄 ${data[0].name}`
+                  : "❌ file harus dalam format .twbx"
                 : ""}
             </span>
 
@@ -134,10 +149,10 @@ export function Submit({ currentUser }) {
             <div className="mt-8">
               <button
                 type="submit"
-                className={`w-full  py-2 px-4 rounded-md ${
+                className={`w-full  py-2 px-4 border border-slate-900  ${
                   isTwbx
-                    ? "bg-gray-300 text-black hover:bg-gray-400 transition"
-                    : "bg-gray-100 text-gray-500 pointer-events-none"
+                    ? " text-black hover:bg-gray-200"
+                    : " line-through pointer-events-none"
                 } `}
               >
                 Submit

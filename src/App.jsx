@@ -12,14 +12,13 @@ import { Login } from "./elements/Login.jsx";
 import { Penilaian } from "./elements/Penilaian.jsx";
 import { Submit } from "./elements/Submit.jsx";
 import { Admin } from "./elements/Admin.jsx";
+import { NotFound } from "./elements/NotFound.jsx";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { Dummy } from "./elements/Dummy.jsx";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
-  const [deadline, setDeadline] = useState("09:45:15");
-
-  console.log(deadline);
+  const deadline = "20:45:15";
 
   return (
     <AuthProvider>
@@ -55,6 +54,7 @@ function App() {
                   <Penilaian
                     evaluatedTeams={currentUser?.evaluatedTeams}
                     teamId={currentUser?.teamId}
+                    id={currentUser?.id}
                   />
                 </ProtectedRoute>
               }
@@ -68,10 +68,8 @@ function App() {
               }
             />
           </Route>
-          <Route
-            path="/admin"
-            element={<Admin batas={deadline} setBatas={setDeadline} />}
-          />
+          <Route path="/admin" element={<Admin batas={deadline} />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </AuthProvider>

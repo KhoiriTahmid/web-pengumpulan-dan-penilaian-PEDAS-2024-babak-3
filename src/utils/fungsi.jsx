@@ -35,6 +35,58 @@ export async function getAllPesertaData() {
   }
 }
 
+export async function getAllPesertaDataForFinal() {
+  try {
+    // Reference to the "peserta" collection
+    const pesertaCollectionRef = collection(db2, "peserta");
+
+    // Get all documents from the "peserta" collection
+    const querySnapshot = await getDocs(pesertaCollectionRef);
+
+    // Map through the documents and return the data with their IDs
+    const allPesertaData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    console.log("Fetched all peserta data:", allPesertaData);
+    return getFinalData(allPesertaData);
+  } catch (error) {
+    console.error("Error fetching all peserta data:", error);
+    return [];
+  }
+}
+
+function getFinalData(db) {
+  const evaluationsMap = new Map();
+
+  // Iterate through all entries in the database
+  db.forEach((entry) => {
+    entry.evaluatedTeams.forEach((evaluatedTeam) => {
+      const { teamId, nilai } = evaluatedTeam;
+
+      // Initialize the array for a team if not already present in the map
+      if (!evaluationsMap.has(teamId)) {
+        evaluationsMap.set(teamId, []);
+      }
+
+      // Add the evaluation details including the evaluatorTeamId
+      evaluationsMap.get(teamId).push({
+        evaluatorTeamId: entry.evaluatorTeamId,
+        nilai,
+      });
+    });
+  });
+
+  // Convert the map into the desired array format
+  const result = Array.from(evaluationsMap, ([teamId, nilaiDiDapat]) => ({
+    teamId,
+    nilaiDiDapat,
+  }));
+
+  return result;
+}
+
 export async function uploadFile(file) {
   //done
   try {
@@ -54,13 +106,13 @@ export async function uploadFile(file) {
   }
 }
 
-export async function addPenilaian(evaluatorTeamId, evaluatedTeams) {
+export async function addPenilaian(id, evaluatorTeamId, evaluatedTeams) {
   //return id of new data
   try {
     console.log("evaluatorTeamId:", evaluatorTeamId);
     console.log("evaluatedTeams:", evaluatedTeams);
 
-    const docRef = await addDoc(collection(db2, "peserta"), {
+    const docRef1 = await addDoc(collection(db2, "peserta"), {
       evaluatorTeamId,
       evaluatedTeams: evaluatedTeams.map((team) => {
         console.log("team:", team);
@@ -83,8 +135,15 @@ export async function addPenilaian(evaluatorTeamId, evaluatedTeams) {
         second: "2-digit",
       }),
     });
-    console.log("Document written with ID: ", docRef.id);
-    return docRef.id;
+
+    // Update the file property
+    const docRef2 = await updateDoc(doc(db1, "peserta", id), {
+      udahNilai: true,
+    });
+
+    console.log("Document written with ID: ", docRef1);
+    console.log("Document written with ID: ", docRef2);
+    return docRef1.id;
   } catch (e) {
     console.error("Error adding document: ", e);
     return null;
@@ -151,14 +210,102 @@ export async function updatePesertaFile(id, fileUrl, fileName) {
   }
 }
 
+export async function updateDataPeserta(
+  id,
+  evaluatedTeams,
+  universitas,
+  membersNIM,
+  udahNilai,
+  fileUrl,
+  fileName,
+  uploadedAt
+) {
+  //belom
+  try {
+    // Get a reference to the document you want to update
+    const pesertaRef = doc(db1, "peserta", id);
+
+    // Update the file property
+    await updateDoc(pesertaRef, {
+      evaluatedTeams: evaluatedTeams.split(", ").sort(),
+      universitas,
+      membersNIM: membersNIM.split(", ").sort(),
+      file: {
+        fileUrl,
+        fileName,
+        uploadedAt,
+      },
+      udahNilai,
+    });
+
+    console.log("File updated successfully.");
+    return true; // Return the updated file data or the whole object if needed
+  } catch (e) {
+    console.error("Error updating file: ", e);
+    return false; // Return null in case of error
+  }
+}
+
 export async function checkPeserta(universitas, nim) {
+  // Check if the device is online
+  if (!navigator.onLine) {
+    return {
+      error: "Device kamu offline. Mohon periksa koneksi internet.",
+    };
+  }
+
+  try {
+    const pesertaQuery = query(
+      collection(db1, "peserta"),
+      where("universitas", "==", universitas),
+      where("membersNIM", "==", nim)
+    );
+
+    // Use a timeout to ensure Firestore responds within a certain time limit
+    const querySnapshot = await Promise.race([
+      getDocs(pesertaQuery),
+      new Promise(
+        (_, reject) =>
+          setTimeout(() => reject(new Error("Request timed out")), 10000) // 10-second timeout
+      ),
+    ]);
+
+    if (!querySnapshot.empty) {
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      console.log("Peserta ditemukan:", data);
+      return data[0];
+    } else {
+      console.log(
+        "Tidak ada peserta yang ditemukan dengan universitas dan NIM tersebut."
+      );
+      return "kosong";
+    }
+  } catch (error) {
+    // Handle specific Firestore or timeout errors
+    if (error.message === "Request timed out") {
+      return { error: "Timeout: konenksi kamu lambat." };
+    } else if (error.code === "permission-denied") {
+      return { error: "Permission denied. Check Firestore rules." };
+    } else if (error.code === "unavailable") {
+      return {
+        error: "Firestore service unavailable. Please try again later.",
+      };
+    } else {
+      return { error: "An unexpected error occurred. Please try again later." };
+    }
+  }
+}
+
+export async function getPesetaByTeamId(teamId) {
   //udah
   try {
     // Membuat query untuk mencari peserta dengan universitas dan NIM yang sesuai
     const pesertaQuery = query(
       collection(db1, "peserta"),
-      where("universitas", "==", universitas),
-      where("membersNIM", "==", nim) // Menggunakan "array-contains" untuk mencari NIM dalam array
+      where("teamId", "==", teamId)
     );
 
     const querySnapshot = await getDocs(pesertaQuery);

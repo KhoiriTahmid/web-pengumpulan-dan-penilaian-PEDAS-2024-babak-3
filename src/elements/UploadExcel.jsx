@@ -26,9 +26,15 @@ export function UploadExcel({ setShowUpload }) {
           continue;
         }
         processedData.push({
-          teamId: row[0],
-          evaluatedTeams: [row[1], row[2], row[3], row[4], row[5]],
-          universitas: row[6],
+          teamId: row[0]?.toLowerCase(),
+          evaluatedTeams: [
+            row[1]?.toLowerCase(),
+            row[2]?.toLowerCase(),
+            row[3]?.toLowerCase(),
+            row[4]?.toLowerCase(),
+            row[5]?.toLowerCase(),
+          ],
+          universitas: row[6]?.toLowerCase(),
           membersNIM: [
             (row[7] || "").toString(),
             (row[8] || "").toString(),
@@ -47,6 +53,7 @@ export function UploadExcel({ setShowUpload }) {
             fileUrl: "",
             uploadedAt: "",
           },
+          udahNilai: false,
         });
       }
 
