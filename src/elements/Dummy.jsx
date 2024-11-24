@@ -1,8 +1,7 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { logOut } from "../utils/fungsi";
 
 export function Dummy({ context, deadline = "", setPopup = "" }) {
-  console.log(context);
   if (context.startsWith("error")) {
     return (
       <div className="bg-white min-h-screen">
@@ -14,12 +13,12 @@ export function Dummy({ context, deadline = "", setPopup = "" }) {
             </h3>
             <p className="text-gray-600 text-sm my-2">{context.slice(5)}</p>
 
-            <a
-              href={"/"}
+            <div
+              onClick={() => setPopup(false)}
               className=" cursor-pointer px-12 w-fit mt-5 border border-slate-900 hover:bg-gray-200   font-semibold py-3"
             >
               Kembali
-            </a>
+            </div>
           </div>
         </div>
       </div>
@@ -90,6 +89,16 @@ export function Dummy({ context, deadline = "", setPopup = "" }) {
       </div>
     );
   }
+
+  async function handleLogOut() {
+    try {
+      await logOut();
+    } catch (error) {
+      console.log(error);
+    }
+    window.location.href = "/";
+  }
+
   return (
     <div className="bg-white min-h-screen flex justify-center items-center">
       <div className="bg-white p-6  w-fit px-28 py-10 md:mx-auto flex flex-col justify-center items-center gap-4 ">
@@ -107,12 +116,12 @@ export function Dummy({ context, deadline = "", setPopup = "" }) {
           </p>
           <p className="text-gray-600 my-2"> Terimakasih 😉</p>
           <div className="pt-10 text-center">
-            <a
-              href={"/"}
+            <div
+              onClick={handleLogOut}
               className="px-12 border border-slate-900 hover:bg-gray-200   font-semibold py-3"
             >
               Okay
-            </a>
+            </div>
           </div>
         </div>
       </div>

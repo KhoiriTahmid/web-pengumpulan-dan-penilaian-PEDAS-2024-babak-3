@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import {
   addPeserta,
   checkPeserta,
-  updatePesertaFile,
   getEvaluatedTeams,
   uploadFile,
 } from "../utils/fungsi.jsx";
@@ -15,6 +14,7 @@ export function Submit({ currentUser }) {
   const [isTwbx, setIsTwbx] = useState(false);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
+  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,7 +30,6 @@ export function Submit({ currentUser }) {
 
   async function submitHandle(e) {
     e.preventDefault();
-    setLoading(true);
 
     // Check if there is a file to upload
     if (data && data.length > 0 && isTwbx) {
@@ -48,22 +47,20 @@ export function Submit({ currentUser }) {
       });
 
       // Upload the file to Firebase Storage
-      const fileUrl = await uploadFile(newFile); // Call your upload function
-      console.log("File uploaded at:", fileUrl); // You can store this URL as needed
 
       try {
-        console.log("cek ", currentUser.teamId, fileUrl, data[0].name);
+        setLoading(true);
+        const result = await uploadFile(newFile, currentUser.id, data[0].name); // Call your upload function
+        console.log("File uploaded at:", result); // You can store this URL as needed
 
-        const updateData = await updatePesertaFile(
-          currentUser.id,
-          fileUrl,
-          data[0].name
-        );
-        if (updateData) {
-          navigate("/pengumpulan/sukses", { replace: true });
+        if (result?.hasOwnProperty("error")) {
+          setIsError(result?.error);
+          return;
         }
-      } catch {
-        console.log("error");
+
+        navigate("/pengumpulan/sukses", { replace: true });
+      } catch (error) {
+        setIsError(error);
       } finally {
         setLoading(false);
       }
@@ -97,6 +94,10 @@ export function Submit({ currentUser }) {
 
   if (loading) {
     return <Dummy context={"loading"} />;
+  }
+
+  if (isError) {
+    return <Dummy context={"error" + isError} setPopup={setIsError} />;
   }
 
   return (
@@ -140,7 +141,7 @@ export function Submit({ currentUser }) {
             >
               {data
                 ? isTwbx
-                  ? `📄 ${data[0].name}`
+                  ? `📄 ${data[0]?.name} ✅`
                   : "❌ file harus dalam format .twbx"
                 : ""}
             </span>
@@ -152,7 +153,7 @@ export function Submit({ currentUser }) {
                 className={`w-full  py-2 px-4 border border-slate-900  ${
                   isTwbx
                     ? " text-black hover:bg-gray-200"
-                    : " line-through pointer-events-none"
+                    : " line-through pointer-events-none opacity-70"
                 } `}
               >
                 Submit

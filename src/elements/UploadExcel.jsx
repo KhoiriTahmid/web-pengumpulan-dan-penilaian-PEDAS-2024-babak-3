@@ -4,6 +4,7 @@ import { addDataByFile } from "../utils/fungsi";
 
 export function UploadExcel({ setShowUpload }) {
   const [teamData, setTeamData] = useState([]);
+  const [noHps, setNoHps] = useState([]);
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -25,29 +26,20 @@ export function UploadExcel({ setShowUpload }) {
         if (row.length == 0 || row[0] == "teamId") {
           continue;
         }
+
+        setNoHps((prevNoHps) => [...prevNoHps, row[2]?.toString()]);
+
         processedData.push({
-          teamId: row[0]?.toLowerCase(),
+          teamId: row[0]?.toString().toLowerCase(),
+          email: row[1]?.toString(),
+          noHp: row[2]?.toString(),
           evaluatedTeams: [
-            row[1]?.toLowerCase(),
-            row[2]?.toLowerCase(),
-            row[3]?.toLowerCase(),
-            row[4]?.toLowerCase(),
-            row[5]?.toLowerCase(),
+            row[3]?.toString().toLowerCase(),
+            row[4]?.toString().toLowerCase(),
+            row[5]?.toString().toLowerCase(),
+            row[6]?.toString().toLowerCase(),
+            row[7]?.toString().toLowerCase(),
           ],
-          universitas: row[6]?.toLowerCase(),
-          membersNIM: [
-            (row[7] || "").toString(),
-            (row[8] || "").toString(),
-            (row[9] || "").toString(),
-          ]
-            .filter((nim) => nim) // Filters out any empty strings or undefined values
-            .sort(),
-          createdAt: new Date().toLocaleTimeString("id-ID", {
-            hour12: false,
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          }),
           file: {
             fileName: "",
             fileUrl: "",
@@ -73,7 +65,7 @@ export function UploadExcel({ setShowUpload }) {
 
       return;
     }
-    const result = await addDataByFile(teamData);
+    const result = await addDataByFile(teamData, noHps);
     setShowUpload(false);
     console.log(result);
   }
@@ -106,21 +98,19 @@ export function UploadExcel({ setShowUpload }) {
                 <thead>
                   <tr className="bg-gray-100">
                     <th className="px-4 py-2 border">Team ID</th>
+                    <th className="px-4 py-2 border">Email</th>
+                    <th className="px-4 py-2 border">no hp</th>
                     <th className="px-4 py-2 border">Evaluated Teams</th>
-                    <th className="px-4 py-2 border">Universitas</th>
-                    <th className="px-4 py-2 border">Members NIM</th>
                   </tr>
                 </thead>
                 <tbody>
                   {teamData.map((team, index) => (
                     <tr key={index} className="hover:bg-gray-50">
                       <td className="px-4 py-2 border">{team.teamId}</td>
+                      <td className="px-4 py-2 border">{team.email}</td>
+                      <td className="px-4 py-2 border">{team.noHp}</td>
                       <td className="px-4 py-2 border">
                         {team.evaluatedTeams.toString()}
-                      </td>
-                      <td className="px-4 py-2 border">{team.universitas}</td>
-                      <td className="px-4 py-2 border">
-                        {team.membersNIM.toString()}
                       </td>
                     </tr>
                   ))}

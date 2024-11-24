@@ -1,13 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./utils/auth";
-import "./App.css";
-import {
-  addPeserta,
-  checkPeserta,
-  updatePesertaFile,
-  getEvaluatedTeams,
-} from "./utils/fungsi.jsx";
 import { Login } from "./elements/Login.jsx";
 import { Penilaian } from "./elements/Penilaian.jsx";
 import { Submit } from "./elements/Submit.jsx";
@@ -18,7 +11,8 @@ import { Dummy } from "./elements/Dummy.jsx";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
-  const deadline = "20:45:15";
+  const deadline = "10.00.00";
+  const deadlinePlusOne = "11.00.00";
 
   return (
     <AuthProvider>
@@ -28,7 +22,11 @@ function App() {
             <Route
               index
               element={
-                <Login setCurrentUser={setCurrentUser} deadline={deadline} />
+                <Login
+                  setCurrentUser={setCurrentUser}
+                  deadline={deadline}
+                  deadlinePlusOne={deadlinePlusOne}
+                />
               }
             />
             <Route
@@ -43,7 +41,7 @@ function App() {
               path="/pengumpulan/sukses"
               element={
                 <ProtectedRoute>
-                  <Dummy context={"submit"} deadline={deadline} />
+                  <Dummy context={"submit"} deadline={deadlinePlusOne} />
                 </ProtectedRoute>
               }
             />
@@ -63,12 +61,19 @@ function App() {
               path="/penilaian/sukses"
               element={
                 <ProtectedRoute>
-                  <Dummy context={"penilaian"} deadline={deadline} />
+                  <Dummy context={"penilaian"} deadline={deadlinePlusOne} />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <Admin currentUser={currentUser} batas={deadline} />
                 </ProtectedRoute>
               }
             />
           </Route>
-          <Route path="/admin" element={<Admin batas={deadline} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
