@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { checkPeserta, login as loginUser } from "../utils/fungsi.jsx";
+import { login as loginUser } from "../utils/fungsi.jsx";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/auth";
 import { Dummy } from "./Dummy.jsx";
@@ -67,7 +67,7 @@ export function Login({ setCurrentUser, deadline, deadlinePlusOne }) {
     } else if (peserta.hasOwnProperty("error")) {
       setIsError(peserta.error);
     } else {
-      console.log("Data ditemukan ", peserta);
+      //console.log("Data ditemukan ", peserta);
 
       if (peserta.email == "atmin@foo.com") {
         setCurrentUser(peserta);
@@ -77,7 +77,7 @@ export function Login({ setCurrentUser, deadline, deadlinePlusOne }) {
       }
 
       if (peserta?.udahNilai) {
-        console.log("masuk ke dummy udah semua");
+        //console.log("masuk ke dummy udah semua");
         setDummyActive("selesai deadline");
         setUserGagalLogin({
           email: email,
@@ -99,12 +99,12 @@ export function Login({ setCurrentUser, deadline, deadlinePlusOne }) {
 
       if (peserta.file.uploadedAt != "") {
         if (currentTime >= deadlinePlusOne) {
-          console.log("masuk ke nilai");
+          //console.log("masuk ke nilai");
           setCurrentUser(peserta);
           login(peserta);
           navigate("/penilaian");
         } else {
-          console.log("masuk ke dummy nunggu waktu");
+          //console.log("masuk ke dummy nunggu waktu");
           setDummyActive("sebelum deadline");
           setUserGagalLogin({
             email: email,
@@ -115,7 +115,7 @@ export function Login({ setCurrentUser, deadline, deadlinePlusOne }) {
         }
       } else {
         if (currentTime < deadline) {
-          console.log("masuk ke pengumpulan");
+          //console.log("masuk ke pengumpulan");
           setCurrentUser(peserta);
           login(peserta);
           navigate("/pengumpulan");
@@ -127,7 +127,7 @@ export function Login({ setCurrentUser, deadline, deadlinePlusOne }) {
             type: "telat",
             pesan: "setelah deadline",
           });
-          console.log("masuk ke dummy telat");
+          //console.log("masuk ke dummy telat");
         }
       }
       // Proceed with the login or other actions, like redirecting or setting state

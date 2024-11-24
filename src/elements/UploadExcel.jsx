@@ -49,7 +49,7 @@ export function UploadExcel({ setShowUpload }) {
         });
       }
 
-      console.log(processedData);
+      //console.log(processedData);
 
       setTeamData(processedData);
     };
@@ -59,15 +59,15 @@ export function UploadExcel({ setShowUpload }) {
 
   async function handleSubmitData(e) {
     e.preventDefault();
-    console.log(teamData);
+    //console.log(teamData);
     if (teamData.length == 0) {
-      console.log("result");
+      //console.log("result");
 
       return;
     }
     const result = await addDataByFile(teamData, noHps);
     setShowUpload(false);
-    console.log(result);
+    //console.log(result);
   }
 
   return (

@@ -21,7 +21,7 @@ export async function login(email, password) {
 
     const data = await cekLoginDB(email);
 
-    console.info(data);
+    //console.info(data);
 
     if (data.fail && result.user.uid) {
       return { error: data.result };
@@ -82,12 +82,12 @@ export async function checkPeserta(universitas, nim) {
         id: doc.id,
         ...doc.data(),
       }));
-      console.log("Peserta ditemukan:", data);
+      //console.log("Peserta ditemukan:", data);
       return data[0];
     } else {
-      console.log(
-        "Tidak ada peserta yang ditemukan dengan universitas dan NIM tersebut."
-      );
+      //console.log(
+      //   "Tidak ada peserta yang ditemukan dengan universitas dan NIM tersebut."
+      // );
       return "kosong";
     }
   } catch (error) {
@@ -109,9 +109,9 @@ export async function checkPeserta(universitas, nim) {
 export async function logOut() {
   try {
     await signOut(auth);
-    console.log("Sign-out successful.");
+    //console.log("Sign-out successful.");
   } catch (error) {
-    console.error("An error happened during sign-out:", error);
+    //console.error("An error happened during sign-out:", error);
   }
 }
 
@@ -129,10 +129,10 @@ export async function getAllPesertaData() {
       ...doc.data(),
     }));
 
-    console.log("Fetched all peserta data:", allPesertaData);
+    //console.log("Fetched all peserta data:", allPesertaData);
     return allPesertaData;
   } catch (error) {
-    console.error("Error fetching all peserta data:", error);
+    //console.error("Error fetching all peserta data:", error);
     return [];
   }
 }
@@ -151,10 +151,10 @@ export async function getAllPesertaDataForFinal() {
       ...doc.data(),
     }));
 
-    console.log("Fetched all peserta data:", allPesertaData);
+    //console.log("Fetched all peserta data:", allPesertaData);
     return getFinalData(allPesertaData);
   } catch (error) {
-    console.error("Error fetching all peserta data:", error);
+    //console.error("Error fetching all peserta data:", error);
     return [];
   }
 }
@@ -194,9 +194,9 @@ export async function addPenilaian(id, evaluatorTeamId, evaluatedTeams) {
     const docRef1 = await addDoc(collection(db1, "nilai"), {
       evaluatorTeamId,
       evaluatedTeams: evaluatedTeams.map((team) => {
-        console.log("team:", team);
-        console.log("teamId:", team.teamId);
-        console.log("nilai:", team.nilai);
+        //console.log("team:", team);
+        //console.log("teamId:", team.teamId);
+        //console.log("nilai:", team.nilai);
 
         return {
           teamId: team.teamId,
@@ -259,7 +259,7 @@ export async function getEvaluatedTeams(teamIds) {
     const fileUrls = allPesertaData.map((item) => item.file.fileUrl);
     return fileUrls; // Return the combined array of peserta data
   } catch (error) {
-    console.error("Error fetching peserta data: ", e);
+    //console.error("Error fetching peserta data: ", e);
     return { error }; // Return null in case of error
   }
 }
@@ -281,16 +281,16 @@ export async function getPesetaByTeamId(teamId) {
         id: doc.id,
         ...doc.data(),
       }));
-      console.log("Peserta ditemukan:", data);
+      //console.log("Peserta ditemukan:", data);
       return data[0]; // Peserta dengan universitas dan NIM ditemukan
     } else {
-      console.log(
-        "Tidak ada peserta yang ditemukan dengan universitas dan NIM tersebut."
-      );
+      //console.log(
+      //   "Tidak ada peserta yang ditemukan dengan universitas dan NIM tersebut."
+      // );
       return null; // Tidak ada peserta yang ditemukan
     }
   } catch (e) {
-    console.error("Error checking peserta: ", e);
+    //console.error("Error checking peserta: ", e);
     return null; // Jika terjadi error, kembalikan false
   }
 }
@@ -322,10 +322,10 @@ export async function addPeserta( // return id of new data
         second: "2-digit",
       }),
     });
-    console.log("Document written with ID: ", docRef.id);
+    //console.log("Document written with ID: ", docRef.id);
     return docRef.id;
   } catch (e) {
-    console.error("Error adding document: ", e);
+    //console.error("Error adding document: ", e);
     return null;
   }
 }
@@ -345,10 +345,10 @@ export async function addDataByFile(teamData, noHps) {
 
   try {
     const data = await batch.commit();
-    console.log("Batch write successful!");
+    //console.log("Batch write successful!");
     return "data";
   } catch (error) {
-    console.error("Error committing batch write:", error);
+    //console.error("Error committing batch write:", error);
     return false;
   }
 }
@@ -373,10 +373,10 @@ async function updatePesertaFile(id, fileUrl, fileName) {
       },
     });
 
-    console.log("File updated successfully.");
+    //console.log("File updated successfully.");
     return { fail: 0 }; // Return the updated file data or the whole object if needed
   } catch (error) {
-    console.error("Error updating file: ", error);
+    //console.error("Error updating file: ", error);
     return { fail: 1, error }; // Return null in case of error
   }
 }
@@ -392,7 +392,7 @@ export async function uploadFile(file, id, fileName) {
     const storageRef = ref(storage, `uploads/${file.name}`);
     const snapshot = await uploadBytes(storageRef, file);
 
-    console.log("Uploaded a blob or file!", snapshot);
+    //console.log("Uploaded a blob or file!", snapshot);
 
     const downloadURL = await getDownloadURL(snapshot.ref);
     const result = await updatePesertaFile(id, downloadURL, fileName);
@@ -405,15 +405,15 @@ export async function uploadFile(file, id, fileName) {
   } catch (error) {
     // Handle Firebase Storage-specific errors
     if (error.code === "storage/unauthorized") {
-      console.error(
-        "403 Forbidden: You don't have permission to upload this file."
-      );
+      //console.error(
+      //   "403 Forbidden: You don't have permission to upload this file."
+      // );
     } else if (error.code === "storage/quota-exceeded") {
-      console.error("Quota exceeded: Unable to upload file.");
+      //console.error("Quota exceeded: Unable to upload file.");
     } else if (error.code === "storage/network-request-failed") {
-      console.error("Network error: Please check your connection.");
+      //console.error("Network error: Please check your connection.");
     } else {
-      console.error("Error uploading file:", error);
+      //console.error("Error uploading file:", error);
     }
 
     return { error: error.message };
@@ -448,10 +448,10 @@ export async function updateDataPeserta(
       udahNilai,
     });
 
-    console.log("File updated successfully.");
+    //console.log("File updated successfully.");
     return true; // Return the updated file data or the whole object if needed
   } catch (e) {
-    console.error("Error updating file: ", e);
+    //console.error("Error updating file: ", e);
     return false; // Return null in case of error
   }
 }

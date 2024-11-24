@@ -47,7 +47,7 @@ export function Admin({ currentUser, batas }) {
   }, [refreshed]);
 
   if (showTeam) {
-    console.log(showTeam);
+    //console.log(showTeam);
     return (
       <div className="flex justify-center items-center h-screen w-screen ">
         <div className="flex flex-col  gap-5 mb-4 w-fit border border-slate-900 py-16 px-20 bg-white">
@@ -331,7 +331,7 @@ function exportToExcel(data, fileName) {
     formattedData.push(row);
   });
 
-  console.info(formattedData);
+  //console.info(formattedData);
 
   // Convert the data into a worksheet
   const worksheet = xlsx.utils.json_to_sheet(formattedData, {

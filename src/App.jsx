@@ -11,8 +11,8 @@ import { Dummy } from "./elements/Dummy.jsx";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
-  const deadline = "10.00.00";
-  const deadlinePlusOne = "11.00.00";
+  const deadline = "13.00.00";
+  const deadlinePlusOne = "14.00.00";
 
   return (
     <AuthProvider>
@@ -105,7 +105,7 @@ function App() {
 //   //       const data = await checkPeserta("UI", "11-22-33"); // Call the async function
 //   //       setPeserta(data); // Update the state with the retrieved data
 //   //     } catch (e) {
-//   //       console.error("Error fetching peserta:", e);
+//   //       //console.error("Error fetching peserta:", e);
 //   //       setError(e); // Set error if there's an issue
 //   //     } finally {
 //   //       setLoading(false); // End loading

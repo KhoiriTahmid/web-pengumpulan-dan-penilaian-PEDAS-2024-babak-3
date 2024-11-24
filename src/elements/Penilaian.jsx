@@ -4,278 +4,6 @@ import { addPenilaian, getEvaluatedTeams } from "../utils/fungsi.jsx";
 import { useNavigate } from "react-router-dom";
 import { Dummy } from "./Dummy.jsx";
 
-// export function Penilaian({ evaluatedTeams, teamId, id }) {
-//   // bigData
-//   const [dataInputNilai, setDataInputNilai] = useState(
-//     evaluatedTeams.map((e) => ({
-//       teamId: e,
-//       nilai: {
-//         estetika: "",
-//         kejelasan: "",
-//         kreativitas: "",
-//       },
-//       sudah: false,
-//     }))
-//   );
-
-//   const navigate = useNavigate();
-//   const [links, setLinks] = useState([]);
-//   const [popUpInfo, setPopUpInfo] = useState(true);
-//   const [loading, setLoading] = useState(true);
-//   const [isError, setIsError] = useState(false);
-
-//   useEffect(() => {
-//     async function fetchData() {
-//       try {
-//         const data = await getEvaluatedTeams(evaluatedTeams);
-//         if (data?.hasOwnProperty("error")) {
-//           setIsError(result?.error);
-//           return;
-//         }
-//         setLinks(data);
-//       } catch (error) {
-//         setIsError(error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     }
-
-//     fetchData();
-//   }, [evaluatedTeams]);
-
-//   useEffect(() => {
-//     console.log(dataInputNilai);
-//   }, [dataInputNilai]);
-
-//   if (loading) {
-//     return <Dummy context={"loading"} />;
-//   }
-
-//   function updateDataInputNilai(
-//     estetika,
-//     kejelasan,
-//     kreativitas,
-//     sudah,
-//     index
-//   ) {
-//     console.log(estetika);
-//     setDataInputNilai((prev) => {
-//       const newValueInput = [...prev];
-//       newValueInput[index] = {
-//         teamId: newValueInput[index].teamId,
-//         nilai: {
-//           estetika,
-//           kejelasan,
-//           kreativitas,
-//         },
-//         sudah,
-//       };
-//       return newValueInput;
-//     });
-//   }
-
-//   async function handleSubmit() {
-//     const invalidItems = dataInputNilai.filter((item) => {
-//       const { teamId, nilai, sudah } = item;
-//       // Check if teamId is undefined, or any nilai is 0, or sudah is false
-//       return (
-//         teamId === undefined ||
-//         nilai.estetika == "" ||
-//         nilai.kejelasan == "" ||
-//         nilai.kreativitas == "" ||
-//         sudah === false
-//       );
-//     });
-
-//     if (invalidItems.length > 0) {
-//       console.error("Found invalid items in dataInputNilai:", invalidItems);
-//       return false;
-//     }
-//     console.log("All items in dataInputNilai are valid.", dataInputNilai);
-//     let akhir;
-//     try {
-//       setLoading(true);
-//       akhir = await addPenilaian(id, teamId, dataInputNilai);
-//     } catch (error) {
-//     } finally {
-//       setLoading(false);
-//     }
-//     if (akhir) {
-//       navigate("/penilaian/sukses", { replace: true });
-//     }
-//   }
-
-//   if (isError) {
-//     return <Dummy context={"error" + isError} setPopup={setIsError} />;
-//   }
-
-//   if (popUpInfo) {
-//     return (
-//       <div className="bg-white min-h-screen flex justify-center items-center">
-//         <div className="bg-white p-6  w-fit px-28 py-10 md:mx-auto flex flex-col justify-center items-center gap-4 border border-black">
-//           <div className="text-center flex flex-col ">
-//             <h3 className="md:text-3xl mb-5 text-3xl flex gap-6 text-gray-900 font-semibold text-center">
-//               <span>Selamat datang </span>
-//               <span className=" text-4xl">🤗</span>
-//               {/* <span>di halaman penilaian</span> */}
-//             </h3>
-//             <p className="text-gray-800 mt-3 mb-1 text-sm font-">
-//               Untuk menilai dashboard tim lain, kamu perlu:
-//             </p>
-//             <ul className="ml-5 space-y-1.5 text-left text-sm py-3  list-decimal list-inside text-gray-800">
-//               <li>Mengunduh file dashboard tiap tim</li>
-//               <li>Membuka file tersebut di Tableau</li>
-//               <li>Mengisi form nilai tiap tim</li>
-//             </ul>
-
-//             <div className="flex gap-2 items-center mt-2">
-//               <InfoIcon />
-//               <span className="text-red-600 text-xs font-medium">
-//                 Perhatian : rentang nilai harus diantara 0.0 - 10.0
-//               </span>
-//             </div>
-//             <div
-//               onClick={() => setPopUpInfo(false)}
-//               className="mt-8 px-12 border cursor-pointer border-slate-900 hover:bg-gray-200   font-semibold w-full py-3"
-//             >
-//               Paham
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="flex flex-col justify-center gap-10 min-h-screen items-center">
-//       <div className="flex items-center justify-center min-fit  gap-4 ">
-//         <Daftar list={links} dataInputNilai={dataInputNilai} />
-//         {/* {dataInputNilai.map((e, i) => (
-//           // links[i] && (
-//           <CardNilai
-//             key={i}
-//             downloadLink={links[i]}
-//             dataInputNilai={e}
-//             updateDataInputNilai={updateDataInputNilai}
-//             index={i}
-//           />
-//         ))} */}
-//       </div>
-
-//       <div
-//         onClick={handleSubmit}
-//         className={`py-2 w-[92%] text-center bg-white border border-slate-900 hover:shadow-xl shadow-md cursor-pointer ${
-//           dataInputNilai.some((e) => e.sudah == false) &&
-//           "pointer-events-none opacity-70 line-through shadow-sm"
-//         }`}
-//       >
-//         Submit
-//       </div>
-//     </div>
-//   );
-// }
-
-function CardNilai({
-  dataInputNilai,
-  updateDataInputNilai,
-  index,
-  downloadLink,
-}) {
-  const [isError, setIsError] = useState([0, 0, 0]); // 0 or 1
-  const [valueInput, setValueInput] = useState([0, 0, 0]); // 0-10
-  const [hasDownload, setHasDownload] = useState(false);
-
-  useEffect(() => {
-    updateDataInputNilai(
-      ...valueInput,
-      !isError.includes(1) && !valueInput.includes(0),
-      (index = index)
-    );
-  }, [isError]);
-
-  const handleInputChange = (value, i) => {
-    const isValid = /^\d+(\.\d+)?$/.test(value) && parseFloat(value) <= 10;
-    setValueInput((prev) => {
-      const newValueInput = [...prev];
-      newValueInput[i] = value;
-      return newValueInput;
-    });
-    setIsError((prev) => {
-      const newIsError = [...prev];
-      newIsError[i] = !isValid ? 1 : 0;
-      return newIsError;
-    });
-  };
-
-  const handleDownload = (e) => {
-    if (!downloadLink) {
-      e.preventDefault(); // Prevent the default action if the link is empty
-      alert(
-        "tim tersebut belum submit dashboard. (hanya terjadi saat development, karena saat lomba dipastikan tim untuk mengumpulkan tepat waktu)"
-      );
-      return;
-    }
-
-    // If the link is available, proceed with the download
-    window.open(downloadLink, "_blank"); // This opens the link in a new tab
-  };
-
-  return (
-    <>
-      <div className="bg-white w-fit border border-gray-900 hover:shadow-xl flex flex-col gap-4 active:border-blue-500">
-        <div className="flex flex-col mx-8 mt-10">
-          <span className="text-lg font-semibold">*****</span>
-          <h2 className="text-xl font-bold mb-2">Team {index + 1}</h2>
-        </div>
-
-        <div>
-          <a
-            className="mx-8 font-semibold mb-2 text-sm underline cursor-pointer hover:text-slate-500"
-            onClick={() => {
-              setHasDownload(true);
-              handleDownload();
-            }}
-          >
-            Unduh File
-          </a>
-        </div>
-
-        {/* Input fields */}
-        <div
-          className={`flex flex-col gap-3 ${
-            !hasDownload && "opacity-70 pointer-events-none"
-          }`}
-        >
-          {Object.keys(dataInputNilai.nilai).map((key, i) => (
-            <div key={i} className="flex flex-col max-h-max text-gray-600 mx-8">
-              <div className="flex items-end justify-between gap-8 text-sm ">
-                <label className="block w-24 ">
-                  {key[0].toUpperCase() + key.slice(1)}
-                </label>
-                <input
-                  type="text"
-                  maxLength="4"
-                  onChange={(e) => handleInputChange(e.target.value, i)}
-                  className={`w-5 border-b-[1.5px] ${
-                    isError[i]
-                      ? "border-red-600"
-                      : "border-slate-500 focus:border-blue-500"
-                  } focus:outline-none`}
-                />
-              </div>
-            </div>
-          ))}
-
-          {/* Status message */}
-          <div className="mt-6 w-[85%] mx-auto border border-b-0 border-slate-900 font-normal text-black text-2xl py-5 px-4 text-center">
-            {!isError.includes(1) && !valueInput.includes(0) ? "👍" : "👎"}
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
 export function Penilaian({ evaluatedTeams, teamId, id }) {
   // bigData
   const [dataInputNilai, setDataInputNilai] = useState(
@@ -446,7 +174,7 @@ function Daftar({
   );
 
   async function handleSubmit() {
-    let base = 10;
+    let base = 5;
     const updatedNilai = [...nilai]; // Create a copy of `nilai`
 
     freshTeam.forEach((e, i) => {
@@ -459,7 +187,7 @@ function Daftar({
         }
       }
       if (i === freshTeam.length - 1) {
-        base = 10;
+        base = 5;
         setFreshTeam(
           dataInputNilai.map((e, i) => [e.teamId, dummyNamaTeam[i]])
         );
@@ -523,12 +251,16 @@ function Daftar({
     );
   }
 
-  //console.log(items);
+  ////console.log(items);
 
   return (
     <div className="p-4 flex flex-col items-center gap-5 justify-center w-2/3">
-      <p className="text-2xl font-semibold text-nowrap">
-        Kategori {count + 1} : {state[count]}
+      <p className="text-lg mb-[-1rem] font-medium text-nowrap text-slate-600">
+        Kategori {count + 1}
+      </p>
+      <p className="text-3xl font-semibold text-nowrap">
+        {state[count].slice(0, 1).toUpperCase()}
+        {state[count].slice(1)}
       </p>
 
       <div className="flex gap-6 ">
@@ -562,6 +294,13 @@ function Daftar({
             </li>
           )}
         />
+      </div>
+
+      <div className="flex gap-2 items-center mt-1">
+        <InfoIcon />
+        <span className="text-red-600 text-xs font-medium text-nowrap">
+          Informasi: Tekan item untuk menggeser
+        </span>
       </div>
 
       <div

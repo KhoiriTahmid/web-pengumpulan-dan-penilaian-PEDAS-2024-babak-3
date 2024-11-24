@@ -18,7 +18,7 @@ export function Submit({ currentUser }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("data: ");
+    //console.log("data: ");
     if (data != null) {
       if (data[0]?.type == "application/twbx") {
         setIsTwbx(true);
@@ -34,7 +34,7 @@ export function Submit({ currentUser }) {
     // Check if there is a file to upload
     if (data && data.length > 0 && isTwbx) {
       const file = data[0]; // Get the first file from the FileList
-      // console.log(file);
+      // //console.log(file);
       const uniqueName = `${Date.now()}_${
         currentUser.teamId[0] + currentUser.teamId[2] + currentUser.teamId[4]
       }_${file.name[1] + file.name[2] + file.name[3]}`;
@@ -51,7 +51,7 @@ export function Submit({ currentUser }) {
       try {
         setLoading(true);
         const result = await uploadFile(newFile, currentUser.id, data[0].name); // Call your upload function
-        console.log("File uploaded at:", result); // You can store this URL as needed
+        //console.log("File uploaded at:", result); // You can store this URL as needed
 
         if (result?.hasOwnProperty("error")) {
           setIsError(result?.error);
@@ -79,7 +79,7 @@ export function Submit({ currentUser }) {
     const files = e.dataTransfer.files;
     setData(files);
     if (files.length > 0) {
-      console.log(files); // Log the dropped file
+      //console.log(files); // Log the dropped file
       // You can further process the file here, e.g., set it to state or upload it.
     }
   }
@@ -88,7 +88,7 @@ export function Submit({ currentUser }) {
     const files = e.target.files;
     setData(files);
     if (files.length > 0) {
-      console.log(files); // Log the selected file
+      //console.log(files); // Log the selected file
     }
   }
 

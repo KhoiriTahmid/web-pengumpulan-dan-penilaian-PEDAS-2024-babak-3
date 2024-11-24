@@ -51,7 +51,7 @@ export function Dummy({ context, deadline = "", setPopup = "" }) {
     );
   }
   if (context.endsWith("deadline")) {
-    console.log(context);
+    //console.log(context);
     return (
       <div className="bg-white min-h-screen">
         <div className="bg-white p-6 min-h-screen md:mx-auto flex flex-col justify-center items-center gap-4 ">
@@ -94,7 +94,7 @@ export function Dummy({ context, deadline = "", setPopup = "" }) {
     try {
       await logOut();
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
     window.location.href = "/";
   }
@@ -115,10 +115,10 @@ export function Dummy({ context, deadline = "", setPopup = "" }) {
               : "Silahkan tunggu pengumuman hasil"}
           </p>
           <p className="text-gray-600 my-2"> Terimakasih 😉</p>
-          <div className="pt-10 text-center">
+          <div className="pt-10 text-center ">
             <div
               onClick={handleLogOut}
-              className="px-12 border border-slate-900 hover:bg-gray-200   font-semibold py-3"
+              className="px-12 max-w-fit mx-auto cursor-pointer border border-slate-900 hover:bg-gray-200   font-semibold py-3"
             >
               Okay
             </div>
